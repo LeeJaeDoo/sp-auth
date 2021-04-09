@@ -1,0 +1,37 @@
+spring:
+profiles:
+  active: local # 기본 환경 선택
+
+# local 환경
+---
+server:
+  port: 8083
+
+spring:
+  application:
+    name: auth-internal
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://15.165.213.153:3306/sp_member?serverTimezone=Asia/Seoul&useSSL=false
+    username: root
+    password: root1234
+  jpa:
+    database: mysql
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyHbmImpl
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        format-sql: true
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    open-in-view: false
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://3.34.76.99:8761/eureka
