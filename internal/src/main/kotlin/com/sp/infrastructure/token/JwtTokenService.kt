@@ -20,6 +20,7 @@ class JwtTokenService : TokenService {
     companion object {
         private const val SECRET = "ITCHIP"
         private const val ISSUER = "SP"
+        private const val ACCESSTOKEN_VALID_MINUTES = 30L
     }
 
     override fun createAccessToken(tokenModel: LoginMemberInfo): String {
@@ -36,7 +37,7 @@ class JwtTokenService : TokenService {
         val now = ZonedDateTime.now(ZoneId.systemDefault())
 
         return jwtCreator.withIssuedAt(Date.from(now.toInstant()))
-//            .withExpiresAt(Date.from(now.plusMinutes(TEST_ACCESS_TOKEN_VALID_MINUTES).toInstant()))
+            .withExpiresAt(Date.from(now.plusMinutes(ACCESSTOKEN_VALID_MINUTES).toInstant()))
             .withIssuer(ISSUER)
             .sign(accessTokenAlgorithm)
     }
