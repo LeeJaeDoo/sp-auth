@@ -11,7 +11,7 @@ data class LoginRequest(
     val nickname: String
 ) {
     fun toMemberInfo() = LoginMemberInfo(
-        memberNo = no,
+        no = no,
         email = email,
         nickname = nickname
     )

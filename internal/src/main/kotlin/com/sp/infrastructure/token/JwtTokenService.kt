@@ -25,7 +25,7 @@ class JwtTokenService : TokenService {
 
     override fun createAccessToken(tokenModel: LoginMemberInfo): String {
         val jwtCreator = JWT.create()
-            .withClaim("no", tokenModel.memberNo)
+            .withClaim("no", tokenModel.no)
             .withClaim("email", tokenModel.email)
             .withClaim("nickname", tokenModel.nickname)
 

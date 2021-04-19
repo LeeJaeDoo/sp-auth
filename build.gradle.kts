@@ -3,11 +3,17 @@ import org.jetbrains.kotlin.gradle.tasks.*
 val snippetsDir: String by extra("build/generated-snippets")
 val springCloudVersion = property("spring_cloud_version") as String
 val coroutineVersion = property("coroutines_version") as String
+val springRestdocsVersion = property("spring_restdocs_version") as String
 val querydslVersion = property("querydsl_version") as String
 
 buildscript {
     repositories {
-        repositories { mavenCentral() }
+        mavenCentral()
+        maven ("https://plugins.gradle.org/m2/")
+    }
+
+    dependencies {
+        classpath ("com.epages:restdocs-api-spec-gradle-plugin:0.11.3") //1.2
     }
 }
 
@@ -65,6 +71,8 @@ subprojects {
     apply(plugin = "org.jetbrains.kotlin.plugin.spring")
     apply(plugin = "org.jetbrains.kotlin.plugin.jpa")
     apply(plugin = "org.jetbrains.kotlin.plugin.allopen")
+    // Document
+    apply(plugin = "com.epages.restdocs-api-spec")
 
     dependencies {
         implementation(kotlin("reflect"))
@@ -87,6 +95,10 @@ subprojects {
         testImplementation("org.junit.platform:junit-platform-launcher")
         testImplementation("org.junit.jupiter:junit-jupiter-api")
         testImplementation("org.junit.jupiter:junit-jupiter-engine")
+
+        // documentation
+        testImplementation("org.springframework.restdocs:spring-restdocs-webtestclient:${springRestdocsVersion}")
+        testImplementation("com.epages:restdocs-api-spec:0.11.3")
 
         // Query DSL
         implementation("com.querydsl:querydsl-jpa:$querydslVersion")
