@@ -20,7 +20,7 @@ class AuthRestController(
         consumes = [MediaType.APPLICATION_JSON_VALUE],
         produces = [MediaType.APPLICATION_JSON_VALUE]
     )
-    suspend fun checkToken(@RequestHeader accessToken: String?): ResponseEntity<LoginMemberInfo> {
+    suspend fun checkToken(@RequestHeader accessToken: String?): ResponseEntity<String> {
         if (accessToken.isNullOrBlank()) throw Exception()
         return ok(authHandler.getAuthentication(accessToken))
     }

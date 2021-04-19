@@ -18,7 +18,7 @@ class TokenCommandService(
         return tokenServices.createAccessToken(request.toMemberInfo())
     }
 
-    fun getAuthentication(tokenValue: String): LoginMemberInfo {
-        return String(Base64.decodeBase64(tokenServices.getPayload(tokenValue))).toModel()
+    fun getAuthentication(tokenValue: String): String {
+        return tokenServices.getPayload(tokenValue)
     }
 }

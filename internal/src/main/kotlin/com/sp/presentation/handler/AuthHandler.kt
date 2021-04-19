@@ -16,7 +16,7 @@ class AuthHandler(
 ) {
 
 
-    suspend fun getAuthentication(accessToken: String): LoginMemberInfo {
+    suspend fun getAuthentication(accessToken: String): String {
         return tokenCommandService.getAuthentication(accessToken)
     }
 
