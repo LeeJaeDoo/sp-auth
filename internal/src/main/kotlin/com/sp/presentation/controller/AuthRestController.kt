@@ -21,6 +21,7 @@ class AuthRestController(
         produces = [MediaType.APPLICATION_JSON_VALUE]
     )
     suspend fun checkToken(@RequestHeader accessToken: String?): ResponseEntity<String> {
+        //TODO Exception class 생성
         if (accessToken.isNullOrBlank()) throw Exception()
         return ok(authHandler.getAuthentication(accessToken))
     }

@@ -125,6 +125,9 @@ subprojects {
                 mavenBom("org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion")
             }
         }
+
+        // Spring mockK
+        testImplementation("com.ninja-squad:springmockk:2.0.3")
     }
 
     tasks {

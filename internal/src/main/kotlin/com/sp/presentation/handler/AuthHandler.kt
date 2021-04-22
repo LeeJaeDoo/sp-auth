@@ -21,10 +21,10 @@ class AuthHandler(
     }
 
     suspend fun createToken(request: ServerRequest): ServerResponse {
-        val memberNo = request.queryParams()["memberNo"]?.first().toString().toLong()
-        val email = request.queryParams()["email"]?.first().toString()
-        val nickname = request.queryParams()["nickname"]?.first().toString()
-        return ok().bodyValueAndAwait(tokenCommandService.createToken(LoginRequest(memberNo, email, nickname)))
+        //TODO Exception class 생성
+        val params = request.awaitBodyOrNull<LoginRequest>() ?: throw Exception()
+
+        return ok().bodyValueAndAwait(tokenCommandService.createToken(params))
     }
 
 }
