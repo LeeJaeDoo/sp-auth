@@ -27,3 +27,15 @@ configure<OpenApi3Extension> {
     separatePublicApi = true
     outputFileNamePrefix = "${rootProject.name}-${project.name}"
 }
+
+configure<OpenApi3Extension> {
+    setServer(rootProject.property("openapi.url") as String + ":8083")
+    title = "${rootProject.name}-${project.name}"
+    version = project.version as String
+    description = """
+                  | Auth Internal API
+                  """.trimMargin()
+    format = "yml"
+    separatePublicApi = true
+    outputFileNamePrefix = "${rootProject.name}-${project.name}"
+}
