@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+    <!-- 변수 지정 -->
+    <property name="LOG_DIR" value="./logs/auth-internal"/>
+    <springProfile name="alpha">
+        <property name="LOG_DIR" value="./logs/auth-internal"/>
+    </springProfile>
+    <springProperty scope="context" name="ACTIVE_PROFILE" source="spring.profiles.active"/>
+
+    <property name="LOG_FILE" value="auth-internal.log"/>
+    <property name="LOG_PATH" value="${LOG_DIR}/${LOG_FILE}"/>
+    <property name="LOG_FILE_MAX_SIZE" value="10MB"/>
+    <property name="LOG_FILE_MAX_HISTORY" value="1"/>
+
+    <property name="PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%-4.20thread] [%-1level] %logger{150} : %msg%n"/>
+    <property name="PACKAGE-TRANSACTION"
+              value="&quot;org.springframework.transaction.interceptor.TransactionInterceptor&quot;"/>
+    <property name="PACKAGE-SQL" value="&quot;jdbc.sqltiming&quot;"/>
+    <property name="PACKAGE-THREAD" value="Thread.currentThread().getName().startsWith(&quot;main&quot;)"/>
+
+    <property name="EXPRESSION-TRANSACTION"
+              value="if ( logger.startsWith(${PACKAGE-TRANSACTION})){return true;}return false;"/>
+    <property name="EXPRESSION-MAIN"
+              value="if ( !logger.startsWith(${PACKAGE-TRANSACTION}) &amp;&amp; !logger.startsWith(${PACKAGE-SQL}) &amp;&amp; ${PACKAGE-THREAD} ){return true;}return false;"/>
+    <property name="EXPRESSION-SQL" value="if ( logger.startsWith(${PACKAGE-SQL})){return true;}return false;"/>
+    <property name="EXPRESSION-THREAD" value="if ( !${PACKAGE-THREAD}){return true;}return false;"/>
+
+    <!-- FILE Appender -->
+    <appender name="FILE_ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <param name="includeCallerData" value="false"/>
+        <param name="queueSize" value="1024"/>
+        <param name="neverBlock" value="true"/>
+        <param name="maxFlushTime" value="60000"/>
+        <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${LOG_PATH}</file>
+            <!-- 일자별로 로그파일 적용하기 -->
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <fileNamePattern>${LOG_PATH}.%d{yyyyMMdd}.%i.gz</fileNamePattern>
+                <maxFileSize>${LOG_FILE_MAX_SIZE:-10MB}</maxFileSize>
+                <maxHistory>${LOG_FILE_MAX_HISTORY:-0}</maxHistory>
+            </rollingPolicy>
+            <encoder>
+                <pattern>${PATTERN}</pattern>
+            </encoder>
+        </appender>
+    </appender>
+
+    <!-- Console Appender-->
+    <appender name="STDOUT_ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <param name="includeCallerData" value="false"/>
+        <param name="queueSize" value="1024"/>
+        <param name="neverBlock" value="true"/>
+        <param name="maxFlushTime" value="60000"/>
+        <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+            <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+                <evaluator>
+                    <expression>${EXPRESSION-MAIN}</expression>
+                </evaluator>
+                <OnMismatch>DENY</OnMismatch>
+                <OnMatch>ACCEPT</OnMatch>
+            </filter>
+            <layout class="ch.qos.logback.classic.PatternLayout">
+                <pattern>${PATTERN}</pattern>
+            </layout>
+        </appender>
+    </appender>
+
+
+    <appender name="STDOUT_TRANSACTION_ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <param name="includeCallerData" value="false"/>
+        <param name="queueSize" value="1024"/>
+        <param name="neverBlock" value="true"/>
+        <param name="maxFlushTime" value="60000"/>
+        <appender name="STDOUT-TRANSACTION" class="ch.qos.logback.core.ConsoleAppender">
+            <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+                <evaluator>
+                    <expression>${EXPRESSION-TRANSACTION}</expression>
+                </evaluator>
+                <OnMismatch>DENY</OnMismatch>
+                <OnMatch>ACCEPT</OnMatch>
+            </filter>
+            <encoder>
+                <charset>UTF-8</charset>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%-4.20thread] %highlight(%boldYellow([%-1level] %logger{150} : %msg%n))</pattern>
+            </encoder>
+        </appender>
+    </appender>
+
+    <appender name="STDOUT_SQL_ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <param name="includeCallerData" value="false"/>
+        <param name="queueSize" value="1024"/>
+        <param name="neverBlock" value="true"/>
+        <param name="maxFlushTime" value="60000"/>
+        <appender name="STDOUT-SQL" class="ch.qos.logback.core.ConsoleAppender">
+            <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+                <evaluator>
+                    <expression>${EXPRESSION-SQL}</expression>
+                </evaluator>
+                <OnMismatch>DENY</OnMismatch>
+                <OnMatch>ACCEPT</OnMatch>
+            </filter>
+            <encoder>
+                <charset>UTF-8</charset>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%-4.20thread] %highlight(%white([%-1level] %logger{150} : %msg%n))</pattern>
+            </encoder>
+        </appender>
+    </appender>
+
+    <appender name="STDOUT_THREAD_ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <param name="includeCallerData" value="false"/>
+        <param name="queueSize" value="1024"/>
+        <param name="neverBlock" value="true"/>
+        <param name="maxFlushTime" value="60000"/>
+        <appender name="STDOUT-THREAD" class="ch.qos.logback.core.ConsoleAppender">
+            <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+                <evaluator>
+                    <expression>${EXPRESSION-THREAD}</expression>
+                </evaluator>
+                <OnMismatch>DENY</OnMismatch>
+                <OnMatch>ACCEPT</OnMatch>
+            </filter>
+            <encoder>
+                <charset>UTF-8</charset>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %boldGreen([%-4.20thread]) %highlight([%-1level] %logger{150} : %msg%n)</pattern>
+            </encoder>
+        </appender>
+    </appender>
+
+    <!-- TRACE > DEBUG > INFO > WARN > ERROR, 대소문자 구분 안함 -->
+    <!-- profile 을 읽어서 appender 을 설정할수 있다.(phase별 파일을 안만들어도 되는 좋은 기능) -->
+    <springProfile name="local,test">
+        <root level="INFO">
+            <appender-ref ref="STDOUT_ASYNC"/>
+            <appender-ref ref="FILE_ASYNC"/>
+            <appender-ref ref="STDOUT_TRANSACTION_ASYNC"/>
+            <appender-ref ref="STDOUT_SQL_ASYNC"/>
+            <appender-ref ref="STDOUT_THREAD_ASYNC"/>
+        </root>
+        <logger name="org.springframework.web.server" level="DEBUG"/>
+        <logger name="com.sp" level="DEBUG"/>
+        <logger name="de.codecentric.boot.admin" level="DEBUG"/>
+
+    </springProfile>
+    <springProfile name="alpha">
+        <root level="INFO">
+            <appender-ref ref="FILE_ASYNC" />
+            <appender-ref ref="STDOUT_ASYNC"/>
+        </root>
+        <logger name="org.springframework.web.server" level="DEBUG"/>
+    </springProfile>
+</configuration>

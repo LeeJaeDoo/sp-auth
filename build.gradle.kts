@@ -35,6 +35,8 @@ plugins {
     // PLUGIN: Spring Boot
     id("org.springframework.boot") version springBootVersion apply false
     id("io.spring.dependency-management") version springDependencyManagementVersion
+
+    id("com.adarshr.test-logger") version "2.0.0"
 }
 
 allprojects {
@@ -73,6 +75,8 @@ subprojects {
     apply(plugin = "org.jetbrains.kotlin.plugin.allopen")
     // Document
     apply(plugin = "com.epages.restdocs-api-spec")
+
+    apply(plugin = "com.adarshr.test-logger")   // 콘솔로 실시간으로 출력되는 테스트 결과의 테마를 지정
 
     dependencies {
         implementation(kotlin("reflect"))
@@ -118,6 +122,11 @@ subprojects {
 
         testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:${coroutineVersion}")
 
+        // Log
+        implementation("org.json:json:20171018")
+        implementation("org.apache.httpcomponents:httpclient:4.5")
+        implementation("ch.qos.logback:logback-classic:1.2.3")
+
         runtimeOnly("mysql:mysql-connector-java")
 
         dependencyManagement {
@@ -128,6 +137,9 @@ subprojects {
 
         // Spring mockK
         testImplementation("com.ninja-squad:springmockk:2.0.3")
+
+        implementation("org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16")
+        implementation("org.codehaus.janino:janino:3.0.15")
     }
 
     tasks {
