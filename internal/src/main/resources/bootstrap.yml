@@ -31,6 +31,15 @@ spring:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
     open-in-view: false
 
+logging:
+  level:
+    # http call log
+    org.springframework.web.reactive.function.client: TRACE
+    # transaction start,end log
+    org.springframework.transaction.interceptor: TRACE
+    # query log
+    jdbc.sqltiming: TRACE
+
 eureka:
   instance:
     prefer-ip-address: true
@@ -60,6 +69,15 @@ spring:
         format-sql: true
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
     open-in-view: false
+
+logging:
+  level:
+    # http call log
+    org.springframework.web.reactive.function.client: TRACE
+    # transaction start,end log
+    org.springframework.transaction.interceptor: TRACE
+    # query log
+    jdbc.sqltiming: TRACE
 
 eureka:
   instance:
