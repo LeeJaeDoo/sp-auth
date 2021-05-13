@@ -6,7 +6,7 @@ import com.auth0.jwt.algorithms.*
 import com.auth0.jwt.exceptions.*
 import com.auth0.jwt.interfaces.*
 import com.sp.application.model.*
-import com.sp.domain.TokenService
+import com.sp.domain.*
 import java.time.*
 import java.util.*
 
@@ -52,9 +52,9 @@ class JwtTokenService : TokenService {
         return try {
             verifier.verify(token)
         } catch (e: TokenExpiredException) {
-            throw Exception()
+            throw FrontTokenExpiredException()
         } catch (e: JWTVerificationException) {
-            throw Exception()
+            throw InvalidFrontTokenException()
         }
     }
 }
