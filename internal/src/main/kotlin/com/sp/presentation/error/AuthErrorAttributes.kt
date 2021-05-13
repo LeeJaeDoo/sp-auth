@@ -53,7 +53,7 @@ class AuthErrorAttributes : ErrorAttributes {
     }
 
     private fun determineMessage(error: Throwable, internalApi: Boolean): String = when (error) {
-        is ResponseStatusException -> error.cause?.message ?: error.reason
+        is ResponseStatusException -> error.cause?.message ?: "${error.reason}"
         is TypeMismatchException, is DecodingException, is NumberFormatException ->
             MessageConverter.getMessage(CommonErrorCode.REQUEST_ERROR.code)
         is AuthInternalException -> error.message
